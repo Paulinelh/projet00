@@ -13,24 +13,17 @@
 			$_aAbsentsDuJour = GestionAbsence::VerifierAbsentDuJour();
 			//Si le tableau n'est pas vide on va vérifier si les ids des présents sont dans la bdd. Si c'est le cas on les supprimes de la bdd.
 			if(!empty($_aAbsentsDuJour)){
-                    var_dump($_aAbsentsDuJour);
 				foreach($_aIdEtuPresent as $_sIdEtuPresent){
 					foreach($_aAbsentsDuJour as $_aAbsent){
-						echo '<br>'.$_sIdEtuPresent.'<br>';
-						if(in_array($_sIdEtuPresent, $_aAbsent)){
-							echo "coucou je suis là"; 
-							echo "<br>";
+						if($_sIdEtuPresent == $_aAbsent['id_etudiant']){
 							// Si il est dans le tableau il faut l'enlever de la bdd car il est présent.
 							//Pour se faire on créer un tableau avec tous les étudiants finalement présent.
 							$_aIdAbsenceASuppr[] = $_aAbsent['id_absence'];
 						}
 					}
-					echo "je sors du foreach";
 				}
-                var_dump($_aIdAbsenceASuppr);
-				exit();
 				//On vérifie que le nouveau tableau créer n'est pas vide et on appelle la fonction pour supprimer les absent de la bdd
-				if(!empty($_aIdEtuFinalementPresent)){
+				if(!empty($_aIdAbsenceASuppr)){
 					GestionAbsence::supprimerAbsentBdd($_aIdAbsenceASuppr);
 				}
 			}
@@ -41,6 +34,8 @@
 			//Si le tableau n'est pas vide on va vérifier si les id des absents sont dans la bdd. S'il ne sont pas dans la bdd on les ajoutent.
 			if(!empty($_aAbsentsDuJour)){
 				foreach($_aIdEtuAbsent as $_sIdEtuAbsent){
+					var_dump($_aAbsentsDuJour);
+					exit();
 					if(!in_array($_sIdEtuAbsent, $_aAbsentsDuJour)){
 						// Si il n'est pas dans le tableau il faut l'ajouter.
 						// pour se faire on créer un tableau avec tous les étudians finalement absent.

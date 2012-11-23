@@ -160,22 +160,20 @@ abstract class GestionAbsence {
                 }//END for
 	}//END public static function ajouterAbsentBdd($_aIdEtu)
 	
-        public static function supprimerAbsentBdd($_aIdEtu){
-            $_sIdEtuASuppr = "";
-            foreach ($_aIdEtu as $_sIdEtu){
-                $_sIdEtuASuppr .= $_sIdEtu.",";
+        public static function supprimerAbsentBdd($_aIdAbsence){
+            $_sIdAbsenceASuppr = "";
+            foreach ($_aIdAbsence as $_sIdEtu){
+                $_sIdAbsenceASuppr .= $_sIdEtu.",";
             }
-            $_sIdEtuASuppr = substr($_sIdEtuASuppr, 0, -1);
+            $_sIdAbsenceASuppr = substr($_sIdAbsenceASuppr, 0, -1);
             
             $dbh = connectBDD::getDBO();
             $sql = "
                 DELETE FROM 
                         absences
                 WHERE
-                    id_etudiant in ($_sIdEtuASuppr)
-                    AND 
+                    id_absence in ($_sIdAbsenceASuppr)
                 ";
-			echo $sql;
              $stmt = $dbh->prepare($sql);
              $stmt->execute();
         }

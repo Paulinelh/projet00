@@ -1,6 +1,6 @@
 <?php
 	session_start();
-	include_once("../class/connectBDD.class.php");
+	include_once("../Class/connectBDD.class.php");
 	
 	/* Récupération des données entrées dans le formulaire */
 	if($_POST['identifiant'] != '' && $_POST['motdepasse'] != '')
@@ -10,28 +10,29 @@
 		
 		/* Regarder les e-mails et mots de passe de la table de données Utilisateurs */
 		$dbh = connectBDD::getDBO();
-                $sqlCo="SELECT identifiant,mot_de_passe, id_statut FROM utilisateurs WHERE identifiant='".$identifiant."'";
-		$stmt = $dbh->prepare($sqlCo);
-		$stmt->execute();
+                $sqlCo="SELECT * FROM utilisateurs WHERE identifiant='".$identifiant."'";
+			$stmt = $dbh->prepare($sqlCo);
+			$stmt->execute();
                 $result = $stmt->fetchAll();
 		
-		
-                if(!empty($result)){
-                    /* Récupération du résultat */
-                    $idStatut = $result[0][2];
-                    if($result[0]['identifiant'] == $identifiant && $result[0]['mot_de_passe'] == $motdepasse){
+
+			if(!empty($result)){
+				/* Récupération du résultat */
+				$idStatut = $result[0]['id_utilisateur'];
+				if($result[0]['identifiant'] == $identifiant && $result[0]['mot_de_passe'] == $motdepasse){
 			
-			$sql = "SELECT id_statut, nom FROM statuts WHERE id_statut='".$idStatut."'";
-			$stmtStatut = $dbh->prepare($sql);
-			$stmtStatut->execute();
-			$resultStatut = $stmtStatut->fetchAll();
-			$_SESSION['statut'] = $resultStatut[0]['nom'];
-			$_SESSION['connexion'] = 'ok';
-			$_SESSION['id'] = $idStatut;
-			header("Location: ../gestionAbsence.php");
+					$sql = "SELECT id_statut, nom FROM statuts WHERE id_statut='".$idStatut."'";
+					$stmtStatut = $dbh->prepare($sql);
+					$stmtStatut->execute();
+					$resultStatut = $stmtStatut->fetchAll();
+					$_SESSION['statut'] = $resultStatut[0]['nom'];
+					$_SESSION['connexion'] = 'ok';
+					$_SESSION['id'] = $idStatut;
+					$_SESSION['nom'] = $result[0]['nom'].' '.$result[0]['prenom'];
+					header("Location: ../gestionAbsence.php");
                         
                         //echo"<script>window.location = 'gestionAbsence.php';</script>";
-                    }else{
+				}else{
                         $message = 0;
                         header("Location: index.php?error=$message");
                        // echo"<script> window.location = 'index.php?error=$message';</script>";
