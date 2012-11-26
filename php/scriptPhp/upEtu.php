@@ -1,5 +1,5 @@
-﻿ <?php
-	include_once("../class/connectBDD.class.php");
+﻿<?php
+	include_once("../Class/connectBDD.class.php");
 	$dbh = connectBDD::getDBO();
 	
 	/* ------------- Gestion de la photo ------------- */
@@ -12,12 +12,6 @@
 		$type = $_FILES['photo']['type'];
 		$erreur = $_FILES['photo']['error'];
 		
-		//Affichage de ses information 
-		echo "Nom d'origine => $photo <br />";
-		echo "Taille => $taille <br />";
-		echo "Add temp sur serv => $tmp <br />";
-		echo "Type => $type <br />";
-		echo "Code erreur => $erreur <br />";
 		
 		//Déplacement du fichier uploadé du répertoire temporaire à un répertoire du serveur.
 		if( $type == 'image/png' || $type == 'image/gif' || $type == 'image/jpeg' || $type == 'image/jpg'){
@@ -226,5 +220,6 @@
 		} 
 	}
 	
-	echo "Etudiant ajouté avec succès. <a href=\"profilEtu.php?id=$idEtu\">Voir le profil de l'étudiant créé</a>"
-	?>
+echo"<script> window.location = '../afficher-etudiant.php?id=$idEtu';</script>";
+//header("Location: ../afficher-etudiant.php?id=$idUser");
+?>

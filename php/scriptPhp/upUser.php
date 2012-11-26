@@ -1,5 +1,5 @@
-﻿  <?php
-	include_once("../class/connectBDD.class.php");
+﻿<?php
+	include_once("../Class/connectBDD.class.php");
 	$dbh = connectBDD::getDBO();
 	
 	/* ------------- Gestion de la photo ------------- */
@@ -12,13 +12,6 @@
 		$type = $_FILES['photo']['type'];
 		$erreur = $_FILES['photo']['error'];
 		
-		//Affichage de ses information 
-		echo "Nom d'origine => $photo <br />";
-		echo "Taille => $taille <br />";
-		echo "Add temp sur serv => $tmp <br />";
-		echo "Type => $type <br />";
-		echo "Code erreur => $erreur <br />";
-		
 		//Déplacement du fichier uploadé du répertoire temporaire à un répertoire du serveur.
 		if( $type == 'image/png' || $type == 'image/gif' || $type == 'image/jpeg' || $type == 'image/jpg'){
 			$nom_fichier = $_FILES['photo']['tmp_name'];
@@ -27,7 +20,6 @@
 		}
 	}else{
 		$nom_destination = '../images/futurPhotoEtu.png';
-		echo "photo par defaut ajouté <br>";
 	}
 	
 	
@@ -82,13 +74,6 @@
 		$identifiant = $_POST['identifiant'];
 		$motDePasse = $_POST['motDePasse'];	
 		$idStatut = $_POST['statut'];
-		echo 'nom : '.$nom.'<br>';
-		echo 'prenom : '.$prenom.'<br>';
-		echo 'telephone : '.$telephone.'<br>';
-		echo 'portable : '.$portable.'<br>';
-		echo 'Email : '.$email.'<br>';
-		echo 'Mot de passe : '.$motDePasse.'<br>';
-		echo 'Id statut : '.$idStatut.'<br>';
 		
 		//Création d'un tableau avec les informations à rentré dans la BDD.
 		$valeurs = array(
@@ -108,8 +93,6 @@
 		
 		
 	}	
-	
-	
 	/* ------------- Gestion des matières ------------- */
 	if($_POST['matiere0'] != ''){
 		// On récupère l'id de l'utilisateur en cours de création.
@@ -183,6 +166,6 @@
 			}
 		}
 	}
-	
-	echo "Utilisateurs ajouté avec succès. <a href=\"profilUser.php?id=$idUser\">Voir le profil de l'utilisateur créé</a>"
-	?>
+echo"<script> window.location = '../afficher-utilisateur.php?id=$idUser';</script>";
+//header("Location: ../afficher-utilisateur.php?id=$idUser");
+?>

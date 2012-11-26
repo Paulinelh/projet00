@@ -1,5 +1,5 @@
 ﻿<?php
-	include_once("../class/connectBDD.class.php");
+	include_once("../Class/connectBDD.class.php");
 	$dbh = connectBDD::getDBO();
 	
 	//On regarde si un groupe doit êtes supprimer :
@@ -27,6 +27,5 @@
 		//Execution de la requête 
 		$resultat = $dbh->query($sqlSuppressionEtu);
 	}
-	echo 'Suppression effectué <a href="trombiAdminEtu.php">Retour à la liste des étudiants</a>';
-	
+	echo"<script> window.location = '../gestion-etudiants.php';</script>";
 ?>

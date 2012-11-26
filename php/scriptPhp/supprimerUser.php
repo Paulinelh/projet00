@@ -1,5 +1,5 @@
 ﻿ <?php
-	include_once("../class/connectBDD.class.php");
+	include_once("../Class/connectBDD.class.php");
 	$dbh = connectBDD::getDBO();
 	
 	//On regarde si un utilisateur doit être supprimer :
@@ -26,6 +26,6 @@
 		";
 		//Execution de la requête 
 		$resultat = $dbh->query($sqlSuppressionUser);
-	}	
-	echo 'Suppression effectué <a href="trombiAdminUser.php">Retour à la liste des utilisateurs</a>';
+	}
+	echo"<script> window.location = '../gestion-utilisateurs.php';</script>";
 ?>

@@ -1,5 +1,5 @@
 <?php
-	include_once("../class/connectBDD.class.php");
+	include_once("../Class/connectBDD.class.php");
 	$dbh = connectBDD::getDBO();
 	
 	//On regarde si un groupe a été ajouté :
@@ -35,5 +35,5 @@
 		$stmtGroupe->execute($valeursGroupe);
 	}
 	//Redirection vers la page groupe
-	header('Location: ../groupe.php');  
+	header('Location: ../gestion-groupes.php');  
 ?>

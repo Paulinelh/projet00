@@ -1,0 +1,88 @@
+#wrap{
+	margin:0 auto;
+	width:80%;
+}
+
+div.clear{
+	clear:both;
+}
+
+div.trombi-item{
+	background:#eee;
+	border:1px solid #ccc;
+	border-radius:3px;
+	float:left;
+	margin:20px;
+	padding:15px;
+	text-align:center;
+}
+div.trombi-item img{
+	width:150px;
+	height:150px;
+}
+div.trombi-item p{
+	font-size:1.3em;
+	margin:5px 0;
+}
+div.trombi-item input{
+	margin:0 3px 5px;
+	width:7em;
+}
+
+
+fieldset.myField{
+	float:left;
+}
+
+
+div.btAjoutEtu,div.button,div.monbouton{
+	float:right;
+}
+
+
+
+
+.btAffichEtu{
+	float:none;
+	margin:0 auto;
+}
+label,input{
+	display:inline;
+}
+
+img.photo{
+	width:290px;
+	height:230px;
+}
+
+
+
+table{
+	float:left;
+}
+
+.justif{
+	display:inline;
+}
+
+.recherche label,.recherche input{
+	display:inline;
+}
+
+
+footer{
+	background:#000;
+	color:#fff;
+	font-size:1em;
+	margin:20px auto 0;
+	padding:10px 10px 3px 10px;
+	text-align:center;
+	width:100%;
+}
+footer p:first-child{
+	float:left;
+}
+footer p:last-child{
+	float:right;
+	margin-top:-39px;
+}

@@ -1,6 +1,6 @@
 <?php
 define('DB_HOST', 'localhost');
-define('DB_DATABASE', 'projetlpdw');
+define('DB_DATABASE', 'projet0');
 define('DB_USERNAME', 'root');
 define('DB_PASSWORD', '');
 

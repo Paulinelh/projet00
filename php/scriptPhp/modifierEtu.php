@@ -1,9 +1,12 @@
- <?php
+  <?php
+	include_once("../Class/connectBDD.class.php");
+	$dbh = connectBDD::getDBO();
 	
-	include_once('connexion.inc.php');
+	//Récupération de l'id dans l'url
+	$idEtu = $_GET["id"];
 	
 	/* ------------- Gestion de la photo ------------- */
-	//Vérification qu'une photo est bien ajoutée : 
+	//Vérification qu'une photo est bien ajouté : 
 	if($_FILES['photo']['name'] != '' && $_FILES['photo']['error'] == 0){
 		//récupération des informations sur la photo :
 		$photo = $_FILES['photo']['name'];
@@ -12,7 +15,7 @@
 		$type = $_FILES['photo']['type'];
 		$erreur = $_FILES['photo']['error'];
 		
-		//Affichage de ses informations 
+		//Affichage de ses information 
 		echo "Nom d'origine => $photo <br />";
 		echo "Taille => $taille <br />";
 		echo "Add temp sur serv => $tmp <br />";
@@ -41,32 +44,24 @@
 		$_POST['codepostalEnt'] != '' || 
 		$_POST['communeEnt'] != ''
 	){
-		//Requête Sql qui va être exécutée :
+		//Requête Sql qui va être exécuté :
 		$sqlEnt = "
-		INSERT INTO 
-			entreprises 
+			UPDATE 
+				entreprises 
+			SET
+				nom = :nom,
+				tuteur = :tuteur,
+				telephone = :telephone,
+				portable = :portable,
+				email = :email,
+				adresse = :adresse,
+				code_postal = :codepostal,
+				commune = :commune
+			WHERE id_entreprise=
 			(
-				id_entreprise,
-				nom,
-				tuteur,
-				telephone,
-				portable,
-				email,
-				adresse,
-				code_postal,
-				commune
-			) 
-			VALUES 
-			(
-				'',
-				:nom,
-				:tuteur,
-				:telephone,
-				:portable,
-				:email,
-				:adresse,
-				:codepostal,
-				:commune
+				SELECT id_entreprise 
+				FROM etudiants 
+				WHERE id_etudiant=$idEtu
 			)
 		";
 		
@@ -83,7 +78,7 @@
 		$codepostalEnt = $_POST['codepostalEnt'];
 		$communeEnt = $_POST['communeEnt'];
 		
-		//Création d'un tableau avec les informations à rentrer dans la BDD.
+		//Création d'un tableau avec les informations à rentré dans la BDD.
 		$valeursEnt = array(
 			':nom'=>$nomEnt,
 			':tuteur'=>$tuteur,
@@ -95,7 +90,7 @@
 			':commune'=>$communeEnt
 		);
 		
-		//Exécution de la requête préparée avec le tableau créé précédemment
+		//Execution de la requète préparer avec le tableau créé précédement
 		$stmtEnt->execute($valeursEnt);
 		
 		//On récupère l'id de l'entreprise en cours de création.
@@ -104,8 +99,6 @@
 		$rowEnt =$resultatEnt->fetch();
 		$idEnt = $rowEnt[0];
 	}
-	
-	
 	
 	/* ------------- Gestion de l'étudiant ------------- */
 	if(
@@ -118,37 +111,22 @@
 		$_POST['codepostal'] != '' || 
 		$_POST['commune'] != ''
 	){
-		//Requête Sql qui va être exécutée :
+		//Requête Sql qui va être exécuté :
 		$sql = "
-		INSERT INTO 
-			etudiants 
-			(
-				id_etudiant,
-				id_entreprise,
-				nom,
-				prenom,
-				telephone,
-				portable,
-				email,
-				adresse,
-				code_postal,
-				commune,
-				photo
-			) 
-			VALUES 
-			(
-				'',
-				:id_entreprise,
-				:nom,
-				:prenom,
-				:telephone,
-				:portable,
-				:email,
-				:adresse,
-				:codepostal,
-				:commune,
-				:photo
-			)
+			UPDATE
+				etudiants 
+			SET 
+				nom = :nom,
+				prenom = :prenom,
+				telephone = :telephone,
+				portable = :portable,
+				email = :email,
+				adresse = :adresse,
+				code_postal = :codepostal,
+				commune = :commune,
+				photo = :photo
+			WHERE 
+				id_etudiant=$idEtu
 		";
 		
 		//On prépare la requête :
@@ -165,7 +143,7 @@
 		$commune = $_POST['commune'];	
 		
 		
-		//Création d'un tableau avec les informations à rentrer dans la BDD.
+		//Création d'un tableau avec les informations à rentré dans la BDD.
 		$valeurs = array(
 			':id_entreprise'=>$idEnt,
 			':nom'=>$nom,
@@ -179,37 +157,31 @@
 			':photo'=>$nom_destination
 		);
 		
-		//Exécution de la requête préparée avec le tableau créé précédemment
+		//Execution de la requète préparer avec le tableau créé précédement
 		$stmt->execute($valeurs);
-	}	
+	}
 	
+	//On récupère l'id de l'étudiant en cours de création.
+	$idEtuSql = "SELECT LAST_INSERT_ID() FROM etudiants";
+	$resultat = $dbh->query($idEtuSql);
+	$row=$resultat->fetch();
+	$idEtu = $row[0];
 	
 	/* ------------- Gestion des groupes ------------- */
 	
-	if($_POST['groupe'] != ''){
-		//On récupère l'id de l'étudiant en cours de création.
-		$idEtuSql = "SELECT LAST_INSERT_ID() FROM etudiants";
-		$resultat = $dbh->query($idEtuSql);
-		$row=$resultat->fetch();
-		$idEtu = $row[0];
+	if(isset($_POST['groupe'])){
 		
-		//On créé un tableau avec tous les groupes qui seront liés par la suite à l'étudiant
+		//On créé un tableau avec tous les groupes qui seront lier par la suite à l'étudiant
 		$_aGroupe = $_POST['groupe'];
 		
 		
-		//On crée la requête qui va nous servir à lier les groupes aux étudiants
+		//On créer la requête qui va nous servir à lier les groupe à un étudiants
 		$sqlGroupe = "
-		INSERT INTO 
+		UPDATE
 			etudiants_has_groupes
-			(
-				id_groupe,
-				id_etudiant
-			) 
-			VALUES 
-			(
-				:idGroupe,
-				:idEtu
-			)
+		SET
+			id_groupe = :idGroupe,
+			id_etudiant = :idEtu
 		";
 		
 		$stmtGroupe = $dbh->prepare($sqlGroupe);
@@ -226,5 +198,5 @@
 		} 
 	}
 	
-	echo "Etudiant ajouté avec succès. <a href=\"profil.php?id=$idEtu\">Voir le profil de l'étudiant créé</a>"
+	echo "Etudiant ajouté avec succès. <a href=\"afficher-etudiant.php?id=$idEtu\">Voir le profil de l'étudiant créé</a>"
 	?>

@@ -64,7 +64,7 @@
 	}//END if(isset($_GET['id']))
 
 	
-	//envoieMail($_aCoordonneEtuAbs);
+	envoieMail($_aCoordonneEtuAbs);
 	function envoieMail($_aCoordonneEtuAbs){
 		$mail = 'lherbette.pauline@gmail.com'; // Déclaration de l'adresse de destination.
 		if (!preg_match("#^[a-z0-9._-]+@(hotmail|live|msn).[a-z]{2,4}$#", $mail)) // On filtre les serveurs qui présentent des bogues.
@@ -76,7 +76,7 @@
 			$passage_ligne = "\n";
 		}
 		//=====Déclaration des messages au format texte et au format HTML.
-		$message_txt = "Bonjour Valérie, \n Voici la liste des étudiants absents accompagnés de leur coordonnées : \n";
+		$message_txt = "Bonjour Valérie, \n Voici la liste des étudiants absents accompagnée de leurs coordonnées : \n";
 		foreach ($_aCoordonneEtuAbs as $line){
 			$message_txt .= $line['nom_etu'].' '.$line['prenom_etu'].'\n';
 			$message_txt .= 'Téléphone : '.$line['telephone_etu'].'\n';
@@ -89,12 +89,13 @@
 			$message_txt .= 'Portable : '.$line['portable_ent'].'\n';
 			$message_txt .= 'E-mail : '.$line['email_ent'].'\n';
 		}
-
+		$message_txt .= 'Tous les autres élèves sont présents.';
+		
 		$message_html = "
 		<html>
 			<head>
 				Bonjour Valérie, <br/> 
-				Voici la liste des étudiants absents accompagnés de leur coordonnées : <br/>
+				Voici la liste des étudiants absents accompagnée de leurs coordonnées : <br/>
 			</head>
 			<body>";
 		foreach ($_aCoordonneEtuAbs as $line){
@@ -110,7 +111,7 @@
 			$message_html .= 'E-mail : '.$line['email_ent'].'</p>';
 		}
 			
-		$message_html .= "</body>
+		$message_html .= "<p>Tous les autres élèves sont présents.</p></body>
 		</html>";
 		//==========
 
@@ -176,5 +177,5 @@
 		//==========
 
 	}
-	header('Location: ../gestionAbsence.php');  
+	header('Location: ../gestion-absences.php');  
 ?>

@@ -19,10 +19,7 @@ abstract class GestionAbsence {
 			$date_debut = date("Y-m-d 08:30:00");
 		}elseif ($currentTime > $_iDateDebutApresmidi && $currentTime < $_iDateFinApresmidi ){
 			$date_debut = date("Y-m-d 13:30:00");
-		} 
-
-		echo $date_debut;
-
+		}
 		//requête pour chercher si absent à la date du jours
 		$sql2 = "SELECT
 					id_etudiant,
@@ -74,109 +71,83 @@ abstract class GestionAbsence {
          */
 	public static function ajouterAbsentBdd($_aIdEtu){
 		$dbh = connectBDD::getDBO();
+		//Requête Sql qui va être exécuté :
+		$sql = "
+		INSERT INTO 
+				absences
+				(
+						id_absence,
+						id_etudiant,
+						date_debut,
+						date_fin,
+						statut
+				) 
+				VALUES 
+				(
+						'',
+						:id_etudiant,
+						:date_debut,
+						:date_fin,
+						:statut
+				)
+		";
 
-		//Verifier si etu pas déjà dans la bdd
-		//$_aEtuDejaAbsent = self::VerifierAbsentDuJour();
+		//On prépare la requête :
+		$stmt = $dbh->prepare($sql);
+
+		/* ------------------ Ajout des données dans les variables ------------------ */
+		//Préparation de la date de début et de fin selon le matin ou l'apres midi.
+		$_iDateDebutMatin = 083000;
+		$_iDateFinMatin = 113000;
+		$_iDateDebutApresmidi = 133000;
+		$_iDateFinApresmidi = 235900;
+		$currentTime = (int) date('His');
+
+		if ($currentTime > $_iDateDebutMatin && $currentTime < $_iDateFinMatin ){
+			$date_debut = date("Y-m-d 08:30:00");
+			$date_fin = date("Y-m-d 11:30:00");
+		}elseif ($currentTime > $_iDateDebutApresmidi && $currentTime < $_iDateFinApresmidi ){
+			$date_debut = date("Y-m-d 13:30:00");
+			$date_fin = date("Y-m-d 16:30:00");
+		} 
+
 		
-		/*foreach($_aIdEtu as $etu){
-			if(in_array($etu, $_aEtuDejaAbsent)){
-				echo 'yesss';
-			}else{
-				echo 'test';
-				$_aIdEtuNew[] = $etu;
-			}
-		}*/
 		
-                //Requête Sql qui va être exécuté :
-                $sql = "
-                INSERT INTO 
-                        absences
-                        (
-                                id_absence,
-                                id_etudiant,
-                                date_debut,
-                                date_fin,
-                                statut
-                        ) 
-                        VALUES 
-                        (
-                                '',
-                                :id_etudiant,
-                                :date_debut,
-                                :date_fin,
-                                :statut
-                        )
-                ";
-
-                //On prépare la requête :
-                $stmt = $dbh->prepare($sql);
-
-                /* ------------------ Ajout des données dans les variables ------------------ */
-                //Préparation de la date de début et de fin selon le matin ou l'apres midi. 
-                /*$heure = date("H:i:s");
-				echo $heure;
-                $heureCherche=new DateTime("12:50:00");
-				var_dump($heure >= $heureCherche);
-				exit();
-                if($heure >= $heureCherche){
-                        $date_debut = date("Y-m-d 08:30:00");
-                        $date_fin = date("Y-m-d 11:30:00");
-                }else{
-                        $date_debut = date("Y-m-d 13:30:00");
-                        $date_fin = date("Y-m-d 16:30:00");
-                }*/
-                
-                $_iDateDebutMatin = 083000;
-                $_iDateFinMatin = 113000;
-                $_iDateDebutApresmidi = 133000;
-                $_iDateFinApresmidi = 235900;
-                $currentTime = (int) date('His');
-
-                if ($currentTime > $_iDateDebutMatin && $currentTime < $_iDateFinMatin ){
-                    $date_debut = date("Y-m-d 08:30:00");
-                    $date_fin = date("Y-m-d 11:30:00");
-                }elseif ($currentTime > $_iDateDebutApresmidi && $currentTime < $_iDateFinApresmidi ){
-                    $date_debut = date("Y-m-d 13:30:00");
-                    $date_fin = date("Y-m-d 16:30:00");
-                } 
-
-                
-                
-                //Préparation du statut (l'étudiant étant tout juste ajouté il est obligatoirement non justifié)
-                $statut = "non justifé";
-                //On cherche la taille du tableau $_aIdEtuNew pour pouvoir parcourir le tableau avec une boucle for.
-                    //$_iTailleTab = count($_aIdEtuNew);
-                $_iTailleTab = count($_aIdEtu);
-                for ($i = 0; $i<$_iTailleTab; $i++){
-                        //Création d'un tableau avec les informations à rentré dans la BDD.
-                        $valeurs = array(
-                                ':id_etudiant'=>$_aIdEtu[$i],
-                                ':date_debut'=>$date_debut,
-                                ':date_fin'=>$date_fin,
-                                ':statut'=>$statut
-                        );
-                        //Execution de la requète préparer avec le tableau créé précédement
-                        $stmt->execute($valeurs);	
-                }//END for
+		//Préparation du statut (l'étudiant étant tout juste ajouté il est obligatoirement non justifié)
+		$statut = "non justifé";
+		//On cherche la taille du tableau $_aIdEtuNew pour pouvoir parcourir le tableau avec une boucle for.
+			//$_iTailleTab = count($_aIdEtuNew);
+		$_iTailleTab = count($_aIdEtu);
+		for ($i = 0; $i<$_iTailleTab; $i++){
+				//Création d'un tableau avec les informations à rentré dans la BDD.
+				$valeurs = array(
+						':id_etudiant'=>$_aIdEtu[$i],
+						':date_debut'=>$date_debut,
+						':date_fin'=>$date_fin,
+						':statut'=>$statut
+				);
+				//Execution de la requète préparer avec le tableau créé précédement
+				$stmt->execute($valeurs);	
+		}//END for
 	}//END public static function ajouterAbsentBdd($_aIdEtu)
 	
-        public static function supprimerAbsentBdd($_aIdAbsence){
-            $_sIdAbsenceASuppr = "";
-            foreach ($_aIdAbsence as $_sIdEtu){
-                $_sIdAbsenceASuppr .= $_sIdEtu.",";
-            }
-            $_sIdAbsenceASuppr = substr($_sIdAbsenceASuppr, 0, -1);
-            
-            $dbh = connectBDD::getDBO();
-            $sql = "
-                DELETE FROM 
-                        absences
-                WHERE
-                    id_absence in ($_sIdAbsenceASuppr)
-                ";
-             $stmt = $dbh->prepare($sql);
-             $stmt->execute();
-        }
+	public static function supprimerAbsentBdd($_aIdAbsence){
+		$_sIdAbsenceASuppr = "";
+		foreach ($_aIdAbsence as $_sIdEtu){
+			$_sIdAbsenceASuppr .= $_sIdEtu.",";
+		}
+		$_sIdAbsenceASuppr = substr($_sIdAbsenceASuppr, 0, -1);
+		
+		$dbh = connectBDD::getDBO();
+		$sql = "
+			DELETE FROM 
+					absences
+			WHERE
+				id_absence in ($_sIdAbsenceASuppr)
+			";
+		 $stmt = $dbh->prepare($sql);
+		 $stmt->execute();
+	}
 }//END class
 
 ?>
